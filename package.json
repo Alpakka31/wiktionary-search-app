@@ -1,12 +1,13 @@
 {
   "name": "wiktionary-search-app",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "homepage": "https://github.com/Alpakka31/wiktionary-search-app",
   "description": "Search for a word on Wiktionary",
   "main": "dist/main/main.js",
   "scripts": {
     "start": "npm run build && electron .",
-    "build": "tsc && xcopy .\\src\\renderer\\index.html .\\dist\\renderer\\index.html /-I /Y && xcopy .\\src\\renderer\\styles.css .\\dist\\renderer\\styles.css /-I /Y ",
+    "clean": "node -e \"require('fs').rmSync('build', { recursive: true, force: true})\"",
+    "build": "npm run clean && tsc && xcopy .\\src\\renderer\\index.html .\\dist\\renderer\\index.html /-I /Y && xcopy .\\src\\renderer\\styles.css .\\dist\\renderer\\styles.css /-I /Y ",
     "package": "npm run build && electron-builder"
   },
   "build": {

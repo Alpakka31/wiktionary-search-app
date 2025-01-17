@@ -13,6 +13,21 @@ import * as fs from 'fs';
 let mainWindow: BrowserWindow | null = null;
 let originalSize = { width: 800, height: 600 };
 
+const instanceLock = app.requestSingleInstanceLock();
+
+if (!instanceLock) {
+    app.on('ready', () => {
+        dialog.showMessageBox({
+            type: 'error',
+            title: 'The program is already running!',
+            message:
+                'The program is already running! You are trying to open a new instance.',
+        });
+    });
+
+    app.quit();
+}
+
 // Path to config file
 const userDataPath = app.getPath('userData');
 const configPath = path.join(userDataPath, 'config.json');
