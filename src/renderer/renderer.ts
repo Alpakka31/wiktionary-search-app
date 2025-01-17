@@ -3,6 +3,7 @@ interface Window {
         searchWiktionary: (word: string) => void;
         loadUrl: (url: string) => void;
         getConfig: () => { backgroundImage: string };
+        onOpenUrl: (callback: (url: string) => void) => void;
         onUpdateBackground: (callback: (path: string) => void) => void;
     };
 }
@@ -76,4 +77,8 @@ window.addEventListener('DOMContentLoaded', () => {
     if (config && config.backgroundImage) {
         setBackground(config.backgroundImage);
     }
+});
+
+window.api.onOpenUrl((url: string) => {
+    window.api.loadUrl(url);
 });
