@@ -44,8 +44,10 @@ const createWindow = () => {
             sandbox: true,
         },
         /*
-            From: https://www.svgrepo.com/svg/497606/translate
-            License: MIT License
+            From:
+                https://www.svgrepo.com/svg/497606/translate
+                https://github.com/Vuesax/iconsax
+            License: GPLv3 License
 
             Converted to .ico with: https://redketchup.io/icon-converter
             And slightly rounded the icon.
