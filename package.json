@@ -6,7 +6,7 @@
   "main": "dist/main/main.js",
   "scripts": {
     "start": "npm run build && electron .",
-    "build": "xcopy .\\src\\renderer\\index.html .\\dist\\renderer\\index.html /Y && xcopy .\\src\\renderer\\styles.css .\\dist\\renderer\\styles.css /Y && tsc",
+    "build": "tsc && xcopy .\\src\\renderer\\index.html .\\dist\\renderer\\index.html /-I /Y && xcopy .\\src\\renderer\\styles.css .\\dist\\renderer\\styles.css /-I /Y ",
     "package": "npm run build && electron-builder"
   },
   "build": {
