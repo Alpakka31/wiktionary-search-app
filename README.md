@@ -33,7 +33,7 @@ Clone the repository and enter it:
 
 #### Building
 
-Install program dependencies with: `npm -i`
+Install program dependencies with: `npm install`
 
 Build the program with: `npm run build`
 
