@@ -8,6 +8,48 @@ interface Window {
     };
 }
 
+function showNotificationStart(message: string, isError: boolean = false) {
+    const notificationText = document.getElementById(
+        'notification-text'
+    ) as HTMLInputElement | null;
+    const customNotification = document.getElementById(
+        'custom-notification'
+    ) as HTMLInputElement | null;
+
+    if (notificationText) {
+        if (isError === true) {
+            // #ff0000 = red
+            notificationText.style.color = '#ff0000';
+            notificationText.style.fontWeight = '700'; // Bold
+        } else {
+            // #ffffff = white
+            notificationText.style.color = '#ffffff';
+            notificationText.style.fontWeight = '400'; // Regular
+        }
+        notificationText.innerText = message;
+    }
+    if (customNotification) {
+        customNotification.style.display = 'block';
+        customNotification.classList.remove('fade-out');
+        customNotification.classList.add('fade-in');
+    }
+}
+
+function showNotificationEnd(animationLength: number = 2000) {
+    const customNotification = document.getElementById(
+        'custom-notification'
+    ) as HTMLInputElement | null;
+    if (customNotification) {
+        customNotification.classList.remove('fade-in');
+        customNotification.classList.add('fade-out');
+
+        setTimeout(() => {
+            customNotification.style.display = 'none';
+            customNotification.classList.remove('fade-out');
+        }, animationLength); // Animation length
+    }
+}
+
 function setBackground(imagePath: string) {
     document.body.style.backgroundImage = `url("${imagePath}")`;
     document.body.style.backgroundSize = 'cover';
@@ -20,30 +62,27 @@ function searchWord() {
     const searchElement = document.getElementById(
         'search'
     ) as HTMLInputElement | null;
-    const errorMessage = document.getElementById(
-        'error-message'
-    ) as HTMLInputElement | null;
-    const customNotification = document.getElementById(
-        'custom-notification'
-    ) as HTMLInputElement | null;
-    const notificationText = document.getElementById(
-        'notification-text'
-    ) as HTMLInputElement | null;
 
     if (searchElement) {
         const word = searchElement.value.trim();
 
         if (word) {
-            // Show notification
-            if (notificationText)
-                notificationText.innerText = `Loading Wiktionary page for '${word}'...`;
-            if (customNotification) customNotification.style.display = 'block';
+            showNotificationStart(`Loading Wiktionary page for '${word}'...`);
 
-            // Send IPC-message
-            window.api.searchWiktionary(word);
+            const interval = setInterval(() => {
+                showNotificationEnd(1000);
+                clearInterval(interval);
+
+                // Send IPC-message
+                window.api.searchWiktionary(word);
+            }, 1000);
         } else {
-            if (errorMessage) errorMessage.style.display = 'block';
-            if (customNotification) customNotification.style.display = 'none';
+            showNotificationStart(`Please enter a word.`, true);
+
+            const interval = setInterval(() => {
+                showNotificationEnd(1800);
+                clearInterval(interval);
+            }, 1800);
         }
     }
 }
@@ -63,7 +102,18 @@ document.getElementById('search')?.addEventListener('keypress', (e) => {
 
 // Update it when changed or removed
 window.api.onUpdateBackground((path: string) => {
+    if (path === '') {
+        showNotificationStart(`Removing background...`);
+    } else {
+        showNotificationStart(`Changing background to '${path}'...`);
+    }
+
     setBackground(path);
+
+    const interval = setInterval(() => {
+        showNotificationEnd(1800);
+        clearInterval(interval);
+    }, 1800);
 });
 
 window.addEventListener('DOMContentLoaded', () => {
@@ -75,7 +125,14 @@ window.addEventListener('DOMContentLoaded', () => {
     // This is just to silence an
     // error on DevTools console.
     if (config && config.backgroundImage) {
+        showNotificationStart(`Loading config.json...`);
         setBackground(config.backgroundImage);
+
+        // Delay hiding the notifcation
+        const interval = setInterval(() => {
+            showNotificationEnd(1800);
+            clearInterval(interval);
+        }, 1800); // Notification visibility time
     }
 });
 

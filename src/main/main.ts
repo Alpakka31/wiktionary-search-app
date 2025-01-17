@@ -26,6 +26,7 @@ const createWindow = () => {
             contextIsolation: true,
             nodeIntegration: false,
             devTools: true,
+            sandbox: true,
         },
         /*
             From: https://www.svgrepo.com/svg/497606/translate
@@ -50,13 +51,67 @@ const createMenu = () => {
             label: 'Menu',
             submenu: [
                 {
-                    label: 'Go Home',
+                    label: 'Go Back',
+                    accelerator: 'Ctrl+Down',
                     click() {
-                        mainWindow?.loadFile(
-                            path.join(__dirname, '../renderer/index.html')
-                        );
+                        if (mainWindow && mainWindow.webContents) {
+                            const { navigationHistory } =
+                                mainWindow.webContents;
+
+                            if (navigationHistory.canGoBack()) {
+                                navigationHistory.goBack();
+                            }
+                        }
                     },
                 },
+                {
+                    label: 'Go Forward',
+                    accelerator: 'Ctrl+Up',
+                    click() {
+                        if (mainWindow && mainWindow.webContents) {
+                            const { navigationHistory } =
+                                mainWindow.webContents;
+
+                            if (navigationHistory.canGoForward()) {
+                                navigationHistory.goForward();
+                            }
+                        }
+                    },
+                },
+                {
+                    label: 'Go Home',
+                    accelerator: 'Ctrl+H',
+                    click() {
+                        // Don't reload the home page if already there.
+                        const homeUrl = `file:///${path.join(__dirname, '../renderer/index.html')}`;
+                        const fixHomeUrl = homeUrl.replace(/\\/g, '/');
+                        const formattedHomeUrl = encodeURIComponent(fixHomeUrl);
+                        const mainWindowUrl =
+                            mainWindow?.webContents.getURL() ?? '';
+
+                        // getURL() is mostly same as fixHomeUrl,
+                        // but also contains some URI encoding.
+                        // So it must first be decoded from the
+                        // URI encoding format back to normal.
+                        // Then decodedMainWindowUrl is encoded
+                        // back to URI encoding format, so
+                        // that it can be compared with formattedHomeUrl.
+                        const decodedMainWindowUrl =
+                            decodeURIComponent(mainWindowUrl);
+                        const formattedMainWindowUrl =
+                            encodeURIComponent(decodedMainWindowUrl);
+
+                        if (
+                            mainWindow &&
+                            formattedMainWindowUrl !== formattedHomeUrl
+                        ) {
+                            mainWindow.loadFile(
+                                path.join(__dirname, '../renderer/index.html')
+                            );
+                        }
+                    },
+                },
+                { type: 'separator' },
                 {
                     label: 'Change Background',
                     click() {
@@ -81,7 +136,7 @@ const createMenu = () => {
                                 config.backgroundImage = correctedPath;
                                 fs.writeFileSync(
                                     configPath,
-                                    JSON.stringify(config, null, 2)
+                                    JSON.stringify(config, null, 4)
                                 );
 
                                 mainWindow?.webContents.send(
@@ -102,7 +157,7 @@ const createMenu = () => {
                             config.backgroundImage = '';
                             fs.writeFileSync(
                                 configPath,
-                                JSON.stringify(config, null, 2)
+                                JSON.stringify(config, null, 4)
                             );
 
                             mainWindow?.webContents.send(
@@ -196,7 +251,7 @@ app.on('ready', () => {
     // Create a default config.json with no background image
     if (!fs.existsSync(configPath)) {
         const defaultConfig = { backgroundImage: '' };
-        fs.writeFileSync(configPath, JSON.stringify(defaultConfig, null, 2));
+        fs.writeFileSync(configPath, JSON.stringify(defaultConfig, null, 4));
     }
 });
 
