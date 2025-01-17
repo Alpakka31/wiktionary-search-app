@@ -2,10 +2,16 @@ interface Window {
     api: {
         searchWiktionary: (word: string) => void;
         loadUrl: (url: string) => void;
-        getConfig: () => Promise<{ backgroundImage: string }>;
-        onOpenUrl: (callback: (url: string) => void) => void;
+        getConfig: () => { backgroundImage: string };
         onUpdateBackground: (callback: (path: string) => void) => void;
     };
+}
+
+function setBackground(imagePath: string) {
+    document.body.style.backgroundImage = `url("${imagePath}")`;
+    document.body.style.backgroundSize = 'cover';
+    document.body.style.backgroundRepeat = 'no-repeat';
+    document.body.style.backgroundPosition = 'center';
 }
 
 // Search for a word on Wiktionary
@@ -56,31 +62,18 @@ document.getElementById('search')?.addEventListener('keypress', (e) => {
 
 // Update it when changed or removed
 window.api.onUpdateBackground((path: string) => {
-    document.body.style.backgroundImage = `url("${path}")`;
-    document.body.style.backgroundSize = 'cover';
-    document.body.style.backgroundRepeat = 'no-repeat';
-    document.body.style.backgroundPosition = 'center';
+    setBackground(path);
 });
 
-// Set the initial background
-window.addEventListener('DOMContentLoaded', async () => {
-    const config = await window.api.getConfig();
+window.addEventListener('DOMContentLoaded', () => {
+    const config = window.api.getConfig();
 
     // When config.json doesn't yet exist
     // 'config' here is undefined.
     //
     // This is just to silence an
     // error on DevTools console.
-    if (config !== undefined) {
-        if (config.backgroundImage !== '') {
-            document.body.style.backgroundImage = `url('${config.backgroundImage}')`;
-            document.body.style.backgroundSize = 'cover';
-            document.body.style.backgroundRepeat = 'no-repeat';
-            document.body.style.backgroundPosition = 'center';
-        }
+    if (config && config.backgroundImage) {
+        setBackground(config.backgroundImage);
     }
-});
-
-window.api.onOpenUrl((url: string) => {
-    window.api.loadUrl(url);
 });

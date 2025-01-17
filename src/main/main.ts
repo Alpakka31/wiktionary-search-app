@@ -52,21 +52,9 @@ const createMenu = () => {
                 {
                     label: 'Go Home',
                     click() {
-                        mainWindow
-                            ?.loadFile(
-                                path.join(__dirname, '../renderer/index.html')
-                            )
-                            .then(() => {
-                                if (fs.existsSync(configPath)) {
-                                    const config = JSON.parse(
-                                        fs.readFileSync(configPath, 'utf8')
-                                    );
-                                    mainWindow?.webContents.send(
-                                        'update-background',
-                                        config.backgroundImage
-                                    );
-                                }
-                            });
+                        mainWindow?.loadFile(
+                            path.join(__dirname, '../renderer/index.html')
+                        );
                     },
                 },
                 {
@@ -205,6 +193,7 @@ app.on('ready', () => {
     createWindow();
     createMenu();
 
+    // Create a default config.json with no background image
     if (!fs.existsSync(configPath)) {
         const defaultConfig = { backgroundImage: '' };
         fs.writeFileSync(configPath, JSON.stringify(defaultConfig, null, 2));
@@ -234,8 +223,13 @@ if (fs.existsSync(configPath)) {
     config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
 }
 
-ipcMain.handle('get-config', () => {
-    return config;
+ipcMain.on('get-config', (event) => {
+    if (fs.existsSync(configPath)) {
+        const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+        event.returnValue = config;
+    } else {
+        event.returnValue = null;
+    }
 });
 
 ipcMain.on('search-wiktionary', (event, arg) => {
