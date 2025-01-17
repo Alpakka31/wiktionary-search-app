@@ -74,9 +74,9 @@ button {
 }
 
 .fade-out {
-    animation: fadeOut 1s forwards; /* 2s duration, adjust as needed */
+    animation: fadeOut 1s forwards;
 }
 
 .fade-in {
-    animation: fadeIn 1s forwards; /* 2s duration, adjust as needed */
+    animation: fadeIn 1s forwards;
 }
