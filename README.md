@@ -47,5 +47,5 @@ Package the program into a portable Windows executable (.exe) and an installer: 
 
 Package the program into a macOS .dmg file: `npm run dist:macos`
 
-Package the program into a Linux AppImage format: `npm run dist:linux`
+Package the program into a Linux AppImage and .tar.gz format: `npm run dist:linux`
 
