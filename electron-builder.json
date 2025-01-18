@@ -1,0 +1,73 @@
+{
+    "appId": "com.github.Alpakka31.wiktionary-search-app",
+    "productName": "Wiktionary Search App",
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "icon.ico",
+      "compression": "maximum"
+    },
+    "mac": {
+      "identity": null,
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "arm64"
+          ]
+        }
+      ],
+      "icon": "icon.icns",
+      "compression": "maximum"
+    },
+    "linux": {
+      "target": [
+        {
+          "target": "AppImage",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "tar.gz",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "icon.png",
+      "category": "Education"
+    },
+    "appImage": {
+      "description": "Search for a word on Wiktionary",
+      "category": "Education"
+    },
+    "nsis": {
+      "oneClick": false
+    },
+    "files": [
+      "dist/main/main.js",
+      "dist/preload/preload.js",
+      "dist/renderer/index.html",
+      "dist/renderer/renderer.js",
+      "dist/renderer/styles.css",
+      "icon.ico",
+      "icon.icns",
+      "icon.png"
+    ],
+    "directories": {
+      "output": "build"
+    }
+}

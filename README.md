@@ -7,9 +7,9 @@ An Electron.js program to search for words on Wiktionary
 
 #### Platform Support
 
-* Windows 10+ (tested on 11, but should work on 10 too)
-
-For now only Windows is supported. Linux and macOS may work, but I haven't tested so I can't say for sure.
+* Windows 10+ (tested on 11, but it should work on 10 too)
+* macOS 14+ (tested on Sequoia, but it should work on Sonoma too)
+* Linux (tested on Fedora Linux 41, but it should work on every other distro too)
 
 
 
@@ -31,19 +31,21 @@ Clone the repository and enter it:
 
 
 
-#### Building
+#### Compiling
 
 Install program dependencies with: `npm install`
 
-Build the program with: `npm run build`
+Compile the program with: `npm run compile`
 
-Or build and start it afterwards with one command: `npm run start`
+Or compile and start it afterwards with one command: `npm run start`
 
 
 
 #### Packaging
 
-Package the program into a Windows executable (.exe): `npm run package`
+Package the program into a portable Windows executable (.exe) and an installer: `npm run dist:win`
 
-That also creates an installer for the program.
+Package the program into a macOS .dmg file: `npm run dist:macos`
+
+Package the program into a Linux AppImage format: `npm run dist:linux`
 

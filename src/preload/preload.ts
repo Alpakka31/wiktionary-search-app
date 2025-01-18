@@ -7,6 +7,11 @@ contextBridge.exposeInMainWorld('api', {
     onOpenUrl: (callback: (url: string) => void) =>
         ipcRenderer.on('open-url', (event, url) => callback(url)),
     getConfig: () => ipcRenderer.sendSync('get-config'),
-    onUpdateBackground: (callback: (path: string) => void) =>
-        ipcRenderer.on('update-background', (event, path) => callback(path)),
+    onUpdateBackground: (
+        callback: (path: string, isAlreadyRemoved: boolean) => void
+    ) =>
+        ipcRenderer.on('update-background', (event, path, isAlreadyRemoved) =>
+            callback(path, isAlreadyRemoved)
+        ),
 });
+

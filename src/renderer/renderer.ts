@@ -4,7 +4,9 @@ interface Window {
         loadUrl: (url: string) => void;
         getConfig: () => { backgroundImage: string };
         onOpenUrl: (callback: (url: string) => void) => void;
-        onUpdateBackground: (callback: (path: string) => void) => void;
+        onUpdateBackground: (
+            callback: (path: string, isAlreadyRemoved: boolean) => void
+        ) => void;
     };
 }
 
@@ -101,9 +103,13 @@ document.getElementById('search')?.addEventListener('keypress', (e) => {
 });
 
 // Update it when changed or removed
-window.api.onUpdateBackground((path: string) => {
+window.api.onUpdateBackground((path: string, isAlreadyRemoved: boolean) => {
     if (path === '') {
-        showNotificationStart(`Removing background...`);
+        if (isAlreadyRemoved) {
+            showNotificationStart(`Background is already removed...`, true);
+        } else {
+            showNotificationStart(`Removing background...`);
+        }
     } else {
         showNotificationStart(`Changing background to '${path}'...`);
     }
@@ -139,3 +145,4 @@ window.addEventListener('DOMContentLoaded', () => {
 window.api.onOpenUrl((url: string) => {
     window.api.loadUrl(url);
 });
+

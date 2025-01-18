@@ -1,42 +1,22 @@
 {
   "name": "wiktionary-search-app",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "homepage": "https://github.com/Alpakka31/wiktionary-search-app",
   "description": "Search for a word on Wiktionary",
-  "main": "dist/main/main.js",
-  "scripts": {
-    "start": "npm run build && electron .",
-    "clean": "node -e \"require('fs').rmSync('build', { recursive: true, force: true})\"",
-    "build": "npm run clean && tsc && xcopy .\\src\\renderer\\index.html .\\dist\\renderer\\index.html /-I /Y && xcopy .\\src\\renderer\\styles.css .\\dist\\renderer\\styles.css /-I /Y ",
-    "package": "npm run build && electron-builder"
-  },
-  "build": {
-    "appId": "com.github.Alpakka31.wiktionary-search-app",
-    "productName": "Wiktionary Search App",
-    "win": {
-      "target": "nsis",
-      "icon": "icon.ico"
-    },
-    "nsis": {
-      "oneClick": false
-    },
-    "files": [
-      "dist/main/main.js",
-      "dist/preload/preload.js",
-      "dist/renderer/index.html",
-      "dist/renderer/renderer.js",
-      "dist/renderer/styles.css",
-      "icon.ico"
-    ],
-    "directories": {
-      "output": "build"
-    }
-  },
+  "author": "Alpakka31",
+  "license": "GPL-3.0-only",
   "keywords": [
     "wiktionary"
   ],
-  "author": "Alpakka31",
-  "license": "MIT",
+  "main": "dist/main/main.js",
+  "scripts": {
+    "clean": "shx rm -rf build/",
+    "start": "npm run compile && electron .",
+    "compile": "tsc -p tsconfig.json && shx cp src/renderer/index.html dist/renderer/index.html && shx cp src/renderer/styles.css dist/renderer/styles.css",
+    "dist:win": "npm run clean && npm run compile && electron-builder --win --config electron-builder.json -p never",
+    "dist:macos": "npm run clean && npm run compile && electron-builder --mac --config electron-builder.json -p never",
+    "dist:linux": "npm run clean && npm run compile && electron-builder --linux --config electron-builder.json -p never"
+  },
   "type": "commonjs",
   "devDependencies": {
     "@eslint/js": "^9.18.0",
@@ -48,6 +28,7 @@
     "eslint-import-resolver-typescript": "^3.7.0",
     "eslint-plugin-import": "^2.31.0",
     "prettier": "3.4.2",
+    "shx": "^0.3.4",
     "typescript": "^5.7.3",
     "typescript-eslint": "^8.20.0"
   }
