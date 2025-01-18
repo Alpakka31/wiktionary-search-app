@@ -49,3 +49,6 @@ Package the program into a macOS .dmg file: `npm run dist:macos`
 
 Package the program into a Linux AppImage and .tar.gz format: `npm run dist:linux`
 
+
+
+Note: To be able to see the program icon on the AppImage file, you need to use e.g something like this: [probonopd/go-appimage: Go implementation of AppImage tools](https://github.com/probonopd/go-appimage)
