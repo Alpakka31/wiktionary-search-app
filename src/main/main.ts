@@ -78,16 +78,7 @@ const createWindow = () => {
             devTools: true,
             sandbox: true,
         },
-        /*
-            From:
-                https://www.freeicons.org/icons/iconsax
-                https://github.com/Vuesax/iconsax
-                
-            License: GPLv3 License
 
-            Converted to .ico with: https://redketchup.io/icon-converter
-            And slightly rounded the icon.
-        */
         icon: iconPath(),
     });
 
