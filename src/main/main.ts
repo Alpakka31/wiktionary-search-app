@@ -10,6 +10,10 @@ import {
 import * as path from 'path';
 import * as fs from 'fs';
 
+// Path to config file
+const userDataPath = app.getPath('userData');
+const configPath = path.join(userDataPath, 'config.json');
+
 let mainWindow: BrowserWindow | null = null;
 let originalSize = { width: 800, height: 600 };
 
@@ -19,21 +23,39 @@ const isLinux = process.platform === 'linux';
 const instanceLock = app.requestSingleInstanceLock();
 
 if (!instanceLock) {
-    app.on('ready', () => {
-        dialog.showMessageBox({
+    app.quit();
+} else {
+    app.on('second-instance', () => {
+        const dialogOptions: Electron.MessageBoxOptions = {
             type: 'error',
-            title: 'The program is already running!',
+            title: 'Too many instances running!',
             message:
-                'The program is already running! You are trying to open a new instance.',
+                'Only one instance is allowed to run at a time! Please restart the program.',
+        };
+
+        dialog.showMessageBox(dialogOptions).then((response) => {
+            if (response.response === 0) {
+                if (mainWindow) {
+                    app.quit();
+                }
+            }
         });
     });
 
-    app.quit();
-}
+    app.on('ready', () => {
+        createWindow();
+        createMenu();
 
-// Path to config file
-const userDataPath = app.getPath('userData');
-const configPath = path.join(userDataPath, 'config.json');
+        // Create a default config.json with no background image
+        if (!fs.existsSync(configPath)) {
+            const defaultConfig = { backgroundImage: '' };
+            fs.writeFileSync(
+                configPath,
+                JSON.stringify(defaultConfig, null, 4)
+            );
+        }
+    });
+}
 
 const iconPath = () => {
     if (isMac) {
@@ -333,17 +355,6 @@ const createMenu = () => {
     Menu.setApplicationMenu(menu);
 };
 
-app.on('ready', () => {
-    createWindow();
-    createMenu();
-
-    // Create a default config.json with no background image
-    if (!fs.existsSync(configPath)) {
-        const defaultConfig = { backgroundImage: '' };
-        fs.writeFileSync(configPath, JSON.stringify(defaultConfig, null, 4));
-    }
-});
-
 // For macOS, Cmd+W functionality: Don't kill the program when it's closed
 app.on('window-all-closed', () => {
     if (!isMac) {
@@ -375,11 +386,6 @@ app.on('activate', () => {
         }
     );
     */
-
-let config: any;
-if (fs.existsSync(configPath)) {
-    config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
-}
 
 ipcMain.on('get-config', (event) => {
     if (fs.existsSync(configPath)) {
