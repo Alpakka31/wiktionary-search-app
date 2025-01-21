@@ -1,5 +1,7 @@
 # Note to myself on: How to create the icon files
 
+Thanks: https://gist.github.com/jamieweavis/b4c394607641e1280d447deed5fc85fc  
+
 The original icon is licensed under GPLv3.
 
 The original icon can be found here:
